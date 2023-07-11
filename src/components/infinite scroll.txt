@@ -1,0 +1,129 @@
+/*import PropTypes from 'prop-types' imports the PropTypes library from the 'prop-types' module. PropTypes is a way to document the expected types of properties passed to React components.
+
+Once you import the PropTypes library, you can use it to define the types of props that your component should receive. This helps to catch errors early on by providing clear warnings in the console if the wrong type of data is passed to a component.
+
+Here's an example of how to use PropTypes to define the types of props that a component should receive:
+
+import React from 'react';
+import PropTypes from 'prop-types';
+
+function Greeting(props) {
+  return <h1>Hello, {props.name}!</h1>;
+}
+
+Greeting.propTypes = {
+  name: PropTypes.string.isRequired
+};
+
+export default Greeting;
+
+*/
+import React, { Component } from 'react'
+import NewsItem from './NewsItem'        // NewsItem File is here to send props
+import Load from'./Load';
+import PropTypes from 'prop-types'
+import InfiniteScroll from "react-infinite-scroll-component";
+// to get infinite scroll to get included in your package type npm i react-infinite-scroll-component in terminal
+
+export class News extends Component {
+
+    //We use defaultProps to specify that by default if nothing mentioned then country should be 'in' 
+         defaultProps = {
+         country:'in',
+        category:'general'
+    }
+//We use PropTypes to specify that "country" should be a string
+     PropTypes={
+        country:PropTypes.string,
+        category:PropTypes.string
+    }
+
+    articles = [] 
+
+      capitalizefirstletter=(string)=>{
+              return string.charAt(0).toUpperCase() + string.slice(1);
+              //The slice() method returns a shallow copy of a portion of an array into a new array object selected from start to end (end not included) where start and end represent the index of items in that array. The original array will not be modified.
+      }
+
+
+     // It is very important to write constructor and Super Class when you are dealing with class based components not required in function based components and Sabse Pehle Constructor hi run hota hai class based component mei
+
+        constructor(props){
+          super(props);
+          console.log("constructor"); // I was Checking in the console as this is working or not so, It's not important to write
+
+          // Defining the State in Class Based Components Like this  The very important Task
+          this.state={ // parameters
+          articles:this.articles, 
+          loading:false, // initially loading is false
+          page:1, // In documentation it is written that by default page is 1 so I have taken page = 1 
+          pagesize:6,
+          totalResults:0 // by default total result is zero
+        }
+
+        document.title = `${this.capitalizefirstletter(this.props.category)}-NEWS`
+
+       }
+
+
+       async componentDidMount(){ // initially when you load the page it is for that , Called immediately after a component is mounted. Setting state here will trigger re-rendering.
+          this.props.setProgress(10)
+           let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=${this.props.apikey}&pagesize=${this.state.pagesize}`;
+           this.setState({loading:true}) 
+           this.props.setProgress(30)
+           let data = await fetch(url);
+           let parsed_data = await data.json(); // bring URL in Json Format
+           this.props.setProgress(70)
+           this.setState({loading:false}) 
+           console.log(parsed_data); // Not important to write as I was checking what output I am Getting in console
+           this.setState({articles : parsed_data.articles,totalResults:parsed_data.totalResults});
+           /*the totalResults property is returned in the response from the API call made in componentDidMount. By setting totalResults in the state, the value can be used in other parts of the component, such as rendering a pagination component or displaying the total number of articles returned.*/
+           this.props.setProgress(100)
+       }
+       
+           capitalizewhole=(string)=>{
+        
+             return string.toUpperCase();
+       }
+
+
+       fetchMoreData = async ()=>{
+              let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=${this.props.apikey}&pagesize=${this.state.pagesize}`;
+              let data = await fetch(url);
+              let parsed_data = await data.json(); // bring URL in Json Format 
+              this.setState({
+                articles : this.state.articles.concat(parsed_data.articles), // aage jaise page increase ho ya increment ho concat karte jao aur results ko
+                totalResults:parsed_data.totalResults
+                //page:this.state.page + 1 //  length aur increase karo page ki
+            });
+
+       }
+
+  render() {
+    return (
+        <>
+         <h1 className="text-center my-4">NEWS - TOP  {this.capitalizewhole(this.props.category)}  HEADLINES</h1>
+         {this.state.loading && <Load/> }{/*Ye syntax ye bol raha hai ki if this.state.loading is true then show the spinner jab url fetch hoga tab true hoga*/}
+     <InfiniteScroll
+          dataLength={this.state.articles.length}
+          next={this.fetchMoreData}
+          hasMore={this.state.articles.length !== this.state.totalResults} // total result ke equal ni honi chaiye tab tak increment ya add karte raho data
+          loader={<Load/>}
+        >
+      <div className="container"> {/*To remove the horizontal Bar Which was Coming If you remove this div you can see in web page*/}
+
+       <div className="row"> {/* bootstrap mei 12 ki grid hoti hai toh 4*3 = 12 cards maine daaldiye hai yaani 4 size ke 3 cards honge */}
+       {this.state.articles.map((element)=>{// instead of element you can write anything
+         return <div className="col-md-4"key={element.url}> {/* Jab Map use kar rahe ho toh ek key pair rakhna jaruri hai toh yaha maine url ko key bana liya hai because it is unique for every news sabke alag alag URL hai*/} 
+           <NewsItem title={!element.title ? "" : element.title.slice(0,45)}  description={!element.description ? "" :element.description.slice(0,88)} imageUrl={element.urlToImage} newsUrl={element.url} author={element.author} date={element.publishedAt}/>  {/*sending props from state*/}
+           </div>
+       })}
+      </div>
+      
+      </div>
+      </InfiniteScroll>
+</>
+    )
+  }
+}
+export default News

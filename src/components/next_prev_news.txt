@@ -1,0 +1,256 @@
+/*import PropTypes from 'prop-types' imports the PropTypes library from the 'prop-types' module. PropTypes is a way to document the expected types of properties passed to React components.
+
+Once you import the PropTypes library, you can use it to define the types of props that your component should receive. This helps to catch errors early on by providing clear warnings in the console if the wrong type of data is passed to a component.
+
+Here's an example of how to use PropTypes to define the types of props that a component should receive:
+
+import React from 'react';
+import PropTypes from 'prop-types';
+
+function Greeting(props) {
+  return <h1>Hello, {props.name}!</h1>;
+}
+
+Greeting.propTypes = {
+  name: PropTypes.string.isRequired
+};
+
+export default Greeting;
+
+*/
+
+"use strict";
+import React, { Component } from 'react'
+import NewsItem from './NewsItem'        // NewsItem File is here to send props
+import Load from'./Load';
+import PropTypes from 'prop-types'
+
+
+export class News extends Component {
+
+    //We use defaultProps to specify that by default if nothing mentioned then country should be 'in' 
+         defaultProps = {
+        country:'in',
+        category:'general'
+    }
+//We use PropTypes to specify that "country" should be a string
+     PropTypes={
+        country:PropTypes.string,
+        category:PropTypes.string
+    }
+
+    articles = [
+        {
+            "source": {
+                "id": "the-verge",
+                "name": "The Verge"
+            },
+            "author": "Jay Peters",
+            "title": "Netflix’s new NFL docuseries starring Patrick Mahomes debuts this summer",
+            "description": "Netflix is partnering with the NFL on a new sports docuseries, Quarterback, that will focus on three quarterbacks: Patrick Mahomes, Kirk Cousins, and Marcus Mariota.",
+            "url": "https://www.theverge.com/2023/2/22/23610867/netflix-nfl-quarterback-docuseries-patrick-mahomes",
+            "urlToImage": "https://cdn.vox-cdn.com/thumbor/vOThXk_eqqXrKvvZjasWQw_YEfA=/0x0:5994x3996/1200x628/filters:focal(2997x1998:2998x1999)/cdn.vox-cdn.com/uploads/chorus_asset/file/24452991/1467159255.jpg",
+            "publishedAt": "2023-02-22T21:03:18Z",
+            "content": "Netflixs new NFL docuseries starring Patrick Mahomes debuts this summer\r\nNetflixs new NFL docuseries starring Patrick Mahomes debuts this summer\r\n / The new show, Quarterback, will follow Mahomes, Ki… [+2209 chars]"
+        },
+        {
+            "source": {
+                "id": "engadget",
+                "name": "Engadget"
+            },
+            "author": "Will Shanklin",
+            "title": "Roku is adding a Local News Hub to its Live TV menu",
+            "description": "Roku wants you to rediscover local news. The company’s upcoming OS 12 update will add a Local News hub, which lets you watch live news channels near you or in major US cities. Additionally, the update adds expanded sports coverage, easier premium subscription…",
+            "url": "https://www.engadget.com/roku-is-adding-a-local-news-hub-to-its-live-tv-menu-140056110.html",
+            "urlToImage": "https://s.yimg.com/uu/api/res/1.2/H58_y.PH.oYcKMdBs983YQ--~B/Zmk9ZmlsbDtoPTYzMDtweW9mZj0wO3c9MTIwMDthcHBpZD15dGFjaHlvbg--/https://media-mbst-pub-ue1.s3.amazonaws.com/creatr-uploaded-images/2023-03/4c4d2ef0-bdf4-11ed-b5f1-b9d7a43608b6.cf.jpg",
+            "publishedAt": "2023-03-09T14:00:56Z",
+            "content": "Roku wants you to rediscover local news. The companys upcoming OS 12 update will add a Local News hub, which lets you watch live news channels near you or in major US cities. Additionally, the update… [+1870 chars]"
+        },
+        {
+            "source": {
+                "id": "cnn",
+                "name": "CNN"
+            },
+            "author": "Ben Morse",
+            "title": "More likely for family of four to get hit by lightning: The astronomical odds of selecting a perfect March Madness bracket",
+            "description": "It is one of the few things in sports which has never been achieved before.",
+            "url": "https://www.cnn.com/2023/03/13/sport/march-madness-perfect-bracket-odds-spt-intl/index.html",
+            "urlToImage": "https://media.cnn.com/api/v1/images/stellar/prod/230307104016-01-march-madness-2022.jpg?c=16x9&q=w_800,c_fill",
+            "publishedAt": "2023-03-13T11:16:44Z",
+            "content": "It is one of the few things in sports which has never been achieved before. \r\nMarch Madness is a few weeks which many sports fans have circled on their calendars. And one of the favorite activities a… [+5903 chars]"
+        },
+        {
+            "source": {
+                "id": "bbc-news",
+                "name": "BBC News"
+            },
+            "author": "https://www.facebook.com/bbcnews",
+            "title": "Great to be here, says Lineker on return to BBC TV",
+            "description": "Lineker hosts BBC sports coverage for first time after being taken off air in an impartiality row.",
+            "url": "https://www.bbc.co.uk/news/uk-65003113",
+            "urlToImage": "https://ichef.bbci.co.uk/news/1024/branded_news/37D4/production/_129029241_p0f9llsq.jpg",
+            "publishedAt": "2023-03-18T18:24:13Z",
+            "content": "Media caption, Watch: Gary Lineker says \"it's great to be here\" as he returns to present BBC football following suspension\r\nGary Lineker has returned to presenting BBC football coverage for the first… [+1543 chars]"
+        },
+        {
+            "source": {
+                "id": "engadget",
+                "name": "Engadget"
+            },
+            "author": "Billy Steele",
+            "title": "How to stream every game of March Madness 2023",
+            "description": "The selection committees have made their picks and the brackets are set. Another installment of arguably the best sports weekend of the year is about to tip off. March Madness or the NCAA basketball tournaments begin today with two First Four games on the men…",
+            "url": "https://www.engadget.com/march-madness-streaming-guide-163042028.html",
+            "urlToImage": "https://s.yimg.com/uu/api/res/1.2/GcS82YH6.M6gwfm8hBjgfA--~B/Zmk9ZmlsbDtoPTYzMDtweW9mZj0wO3c9MTIwMDthcHBpZD15dGFjaHlvbg--/https://media-mbst-pub-ue1.s3.amazonaws.com/creatr-uploaded-images/2023-03/3e750b10-c27a-11ed-bfd5-ab67b9a0eabd.cf.jpg",
+            "publishedAt": "2023-03-14T16:30:42Z",
+            "content": "The selection committees have made their picks and the brackets are set. Another installment of arguably the best sports weekend of the year is about to tip off. March Madness or the NCAA basketball … [+7012 chars]"
+        },
+        {
+            "source": {
+                "id": "cnn",
+                "name": "CNN"
+            },
+            "author": "Devan Cole",
+            "title": "West Virginia asks Supreme Court to let it enforce state's anti-trans sports ban",
+            "description": "West Virginia on Thursday asked the US Supreme Court to allow it to enforce a state law that prohibits transgender women and girls from participating in public school sports.",
+            "url": "https://www.cnn.com/2023/03/10/politics/transgender-sports-ban-west-virginia-supreme-court/index.html",
+            "urlToImage": "https://media.cnn.com/api/v1/images/stellar/prod/221208215220-scotus-lgbtq.jpg?c=16x9&q=w_800,c_fill",
+            "publishedAt": "2023-03-10T16:04:35Z",
+            "content": "West Virginia on Thursday asked the US Supreme Court to allow it to enforce a state law that prohibits transgender women and girls from participating in public school sports. \r\nThe emergency request … [+2756 chars]"
+        },
+        {
+            "source": {
+                "id": "cnn",
+                "name": "CNN"
+            },
+            "author": "Wayne Sterling, Steve Almasy",
+            "title": "New NCAA President Charlie Baker admits it's a 'tumultuous time' in college sports",
+            "description": "Charlie Baker has been NCAA president for less than two weeks, but he knows he is coming into his role in the governing body of major college sports during a tumultuous time.",
+            "url": "https://www.cnn.com/2023/03/14/sport/ncaa-charlie-baker-president-spt-intl/index.html",
+            "urlToImage": "https://media.cnn.com/api/v1/images/stellar/prod/230314173439-ncaa-president-charlie-baker-intv.jpg?c=16x9&q=w_800,c_fill",
+            "publishedAt": "2023-03-15T02:18:21Z",
+            "content": "Charlie Baker has been NCAA president for less than two weeks, but he knows he is coming into his role in the governing body of major college sports during a tumultuous time.\r\nBaker, most recently th… [+5805 chars]"
+        },
+        {
+            "source": {
+                "id": "cnn",
+                "name": "CNN"
+            },
+            "author": "Ben Morse, Patrick Sung, Al Goodman",
+            "title": "FC Barcelona and former club presidents charged with 'continued corruption' relating to alleged improper payments",
+            "description": "FC Barcelona was charged on Friday by the Barcelona provincial prosecutor's office with \"continued corruption between individuals in the sports field\" in addition to other charges in relation to an alleged payment scandal which has rocked Spanish soccer.",
+            "url": "https://www.cnn.com/2023/03/10/football/fc-barcelona-corruption-charges-referees-payments-spt-intl/index.html",
+            "urlToImage": "https://media.cnn.com/api/v1/images/stellar/prod/230216150143-01-barcelona-investigation.jpg?c=16x9&q=w_800,c_fill",
+            "publishedAt": "2023-03-10T22:41:19Z",
+            "content": "FC Barcelona was charged on Friday by the Barcelona provincial prosecutors office with continued corruption between individuals in the sports field in addition to other charges in relation to an alle… [+4740 chars]"
+        },
+        {
+            "source": {
+                "id": "business-insider",
+                "name": "Business Insider"
+            },
+            "author": "amcdade@insider.com (Aaron McDade)",
+            "title": "The largest broadcaster of local sports in US filed for bankruptcy, but still hopes broadcasts won't be disrupted",
+            "description": "Diamond Sports Group, which operates the Bally Sports regional networks and broadcasts games for dozens of MLB, NBA, and NHL teams, has filed for bankruptcy.",
+            "url": "https://www.businessinsider.com/diamond-sports-largest-sports-broadcaster-us-bankruptcy-2023-3",
+            "urlToImage": "https://i.insider.com/6411f92a8215b500181480c6?width=1200&format=jpeg",
+            "publishedAt": "2023-03-15T18:08:31Z",
+            "content": "Diamond Sports Group, the largest broadcaster of local sports in the US, has filed for Chapter 11 bankruptcy protection as it plans restructuring to eliminate about $8 billion in debt.\r\nDiamond, whic… [+2033 chars]"
+        }
+     ]
+
+
+      capitalizefirstletter=(string)=>{
+              return string.charAt(0).toUpperCase() + string.slice(1);
+              //The slice() method returns a shallow copy of a portion of an array into a new array object selected from start to end (end not included) where start and end represent the index of items in that array. The original array will not be modified.
+      }
+
+
+     // It is very important to write constructor and Super Class when you are dealing with class based components not required in function based components and Sabse Pehle Constructor hi run hota hai class based component mei
+
+        constructor(props){
+          super(props);
+          console.log("constructor"); // I was Checking in the console as this is working or not so, It's not important to write
+
+          // Defining the State in Class Based Components Like this  The very important Task
+          this.state={ // parameters
+          articles:this.articles, 
+          loading:false,
+          page:1, // In documentation it is written that by default page is 1 so I have taken page = 1 
+          pagesize:6
+        }
+
+        document.title = `${this.capitalizefirstletter(this.props.category)}-NEWS`
+
+       }
+
+
+       async componentDidMount(){ // initially when you load the page it is for that , Called immediately after a component is mounted. Setting state here will trigger re-rendering.
+           let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=320674764d4c460eb47e750c7ab7f005&pagesize=${this.state.pagesize}`;
+           this.setState({loading:true}) 
+           let data = await fetch(url);
+           let parsed_data = await data.json(); // bring URL in Json Format
+           this.setState({loading:false}) 
+           console.log(parsed_data); // Not important to write as I was checking what output I am Getting in console
+           this.setState({articles : parsed_data.articles,totalResults:parsed_data.totalResults});
+           /*the totalResults property is returned in the response from the API call made in componentDidMount. By setting totalResults in the state, the value can be used in other parts of the component, such as rendering a pagination component or displaying the total number of articles returned.*/
+       }
+       
+
+       handlenextclick = async()=>{ // and when you click on next it is for that
+  
+    
+        let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=320674764d4c460eb47e750c7ab7f005&page=${this.state.page + 1}&pagesize=${this.state.pagesize}`; // baptics literals
+        this.setState({loading:true}) 
+        let data = await fetch(url);
+        let parsed_data = await data.json();
+        this.setState({loading:false}) 
+        console.log(parsed_data);
+        this.setState({
+            page:this.state.page + 1,
+            articles : parsed_data.articles
+        });
+
+       }
+
+       handleprevclick = async()=>{ // and when you click on prev it is for that
+
+        let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=320674764d4c460eb47e750c7ab7f005&page=${this.state.page - 1}&pagesize=${this.state.pagesize}`;
+        this.setState({loading:true}) // jab url fetch hoga tab loading true hoga aur jab loading true hoga tab spinner dikhega jiski logic humne niche likhi hai
+        let data = await fetch(url);
+        let parsed_data = await data.json();
+        this.setState({loading:false}) // after fetching the data loading ko false kardo
+        console.log(parsed_data);
+        this.setState({
+            page:this.state.page - 1,
+            articles : parsed_data.articles
+        });
+       }
+
+       capitalizewhole=(string)=>{
+             return string.toUpperCase();
+       }
+
+  render() {
+    return (
+ <div className='container my-5'>
+         <h1 className="text-center my-4">NEWS - TOP  {this.capitalizewhole(this.props.category)}  HEADLINES</h1>
+         {this.state.loading && <Load/>} {/*Ye syntax ye bol raha hai ki if this.state.loading is true then show the spinner*/} 
+       <div className="row"> {/* bootstrap mei 12 ki grid hoti hai toh 4*3 = 12 cards maine daaldiye hai yaani 4 size ke 3 cards honge */}
+
+       {!this.state.loading && this.state.articles.map((element)=>{// instead of element you can write anything
+         return <div className="col-md-4"key={element.url}> {/* Jab Map use kar rahe ho toh ek key pair rakhna jaruri hai toh yaha maine url ko key bana liya hai because it is unique for every news sabke alag alag URL hai*/} 
+           <NewsItem title={!element.title ? "" : element.title.slice(0,45)}  description={!element.description ? "" :element.description.slice(0,88)} imageUrl={element.urlToImage} newsUrl={element.url} author={element.author} date={element.publishedAt}/>  {/*sending props from state*/}
+           </div>
+       })}
+
+      </div>
+      <div className="container my-3 d-flex justify-content-between">
+      <button disabled = {this.state.page<=1} type="button" class="btn btn-dark"onClick={this.handleprevclick}>&larr; Previous</button>
+      <button disabled={ (this.state.page + 1 > Math.ceil(this.state.totalResults/this.state.pagesize))}type="button" class="btn btn-dark"onClick={this.handlenextclick}>Next &rarr;</button>  {/*totalResults = 70 / article size in each page is 10 so total 7 pages tak next button kam karega after that it will be disabled*/}
+      </div>
+</div>
+    )
+  }
+}
+export default News

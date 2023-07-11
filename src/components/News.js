@@ -1,0 +1,141 @@
+import React, { Component } from "react";
+import NewsItem from "./NewsItem";
+import Load from "./Load";
+import PropTypes from "prop-types";
+
+class News extends Component {
+  static defaultProps = {
+    country: "in",
+    category: "general",
+  };
+
+  static propTypes = {
+    country: PropTypes.string,
+    category: PropTypes.string,
+  };
+
+  state = {
+    articles: [],
+    loading: false,
+    page: 1,
+    pageSize: 6,
+    totalResults: 0,
+  };
+
+  capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+
+  async componentDidMount() {
+    try {
+      const { country, category } = this.props;
+      const { page, pageSize } = this.state;
+      const url = `https://newsapi.org/v2/top-headlines?country=${country}&category=${category}&apiKey=320674764d4c460eb47e750c7ab7f005&pagesize=${pageSize}`;
+
+      this.setState({ loading: true });
+      const response = await fetch(url);
+      const data = await response.json();
+
+      this.setState({
+        loading: false,
+        articles: data.articles,
+        totalResults: data.totalResults,
+      });
+
+      document.title = `${this.capitalizeFirstLetter(category)} - NEWS`;
+    } catch (error) {
+      console.error("Error fetching news articles:", error);
+    }
+  }
+
+  handleNextClick = async () => {
+    const { country, category } = this.props;
+    const { page, pageSize } = this.state;
+    const nextPage = page + 1;
+    const url = `https://newsapi.org/v2/top-headlines?country=${country}&category=${category}&apiKey=320674764d4c460eb47e750c7ab7f005&page=${nextPage}&pagesize=${pageSize}`;
+
+    try {
+      this.setState({ loading: true });
+      const response = await fetch(url);
+      const data = await response.json();
+
+      this.setState({
+        loading: false,
+        articles: data.articles,
+        page: nextPage,
+      });
+    } catch (error) {
+      console.error("Error fetching next page articles:", error);
+    }
+  };
+
+  handlePrevClick = async () => {
+    const { country, category } = this.props;
+    const { page, pageSize } = this.state;
+    const prevPage = page - 1;
+    const url = `https://newsapi.org/v2/top-headlines?country=${country}&category=${category}&apiKey=320674764d4c460eb47e750c7ab7f005&page=${prevPage}&pagesize=${pageSize}`;
+
+    try {
+      this.setState({ loading: true });
+      const response = await fetch(url);
+      const data = await response.json();
+
+      this.setState({
+        loading: false,
+        articles: data.articles,
+        page: prevPage,
+      });
+    } catch (error) {
+      console.error("Error fetching previous page articles:", error);
+    }
+  };
+
+  render() {
+    const { loading, articles, page, totalResults } = this.state;
+
+    return (
+      <div className="container my-5">
+        <h1 className="text-center my-4">
+          NEWS - TOP {this.capitalizeFirstLetter(this.props.category)} HEADLINES
+        </h1>
+        {loading && <Load />}
+        <div className="row">
+          {articles.map((element) => (
+            <div className="col-md-4" key={element.url}>
+              <NewsItem
+                title={!element.title ? "" : element.title.slice(0, 45)}
+                description={
+                  !element.description ? "" : element.description.slice(0, 88)
+                }
+                imageUrl={element.urlToImage}
+                newsUrl={element.url}
+                author={element.author}
+                date={element.publishedAt}
+              />
+            </div>
+          ))}
+        </div>
+        <div className="container my-3 d-flex justify-content-between">
+          <button
+            disabled={page <= 1}
+            type="button"
+            className="btn btn-dark"
+            onClick={this.handlePrevClick}
+          >
+            &larr; Previous
+          </button>
+          <button
+            disabled={page + 1 > Math.ceil(totalResults / this.state.pageSize)}
+            type="button"
+            className="btn btn-dark"
+            onClick={this.handleNextClick}
+          >
+            Next &rarr;
+          </button>
+        </div>
+      </div>
+    );
+  }
+}
+
+export default News;
